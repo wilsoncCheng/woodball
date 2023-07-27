@@ -5,12 +5,13 @@
                 <div class="col space-between">
                     <div class="title">賽事名稱</div>
                     <div class="start-button">
-                        <router-link @click="startGame" to="/game">前端測試按鈕 </router-link>
-                    </div>
-                    <div class="start-button">
-                        <button type="submit" class="button" id="startGameBTN">開始<span class="button-word">{{
+                        <!-- <button type="submit" class="button" id="startGameBTN">開始<span class="button-word">{{
                             nowPlayerNumber
-                        }}</span></button>
+                        }}</span></button> -->
+                        <router-link to="/game" class="w-full">
+                            <button type="submit" @click="startGame" name="loginBTN"
+                                class="card-button button mx-auto">登入</button>
+                        </router-link>
                     </div>
                 </div>
                 <div class="col">
@@ -210,6 +211,10 @@ watch(battle, (newVal) => {
     height: 100vh;
     left: 0;
     top: 0;
+}
+
+.card-button {
+    background-color: red;
 }
 
 .col .gameNameTxt {
