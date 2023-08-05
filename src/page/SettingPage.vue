@@ -3,7 +3,7 @@
         <div class="home-container">
             <div class="contest">
                 <div class="col space-between">
-                    <div class="title">賽事名稱</div>
+                    <div class="title">{{ $store.gameLocation }}</div>
                     <div class="start-button">
                         <!-- <button type="submit" class="button" id="startGameBTN">開始<span class="button-word">{{
                             nowPlayerNumber
@@ -110,14 +110,10 @@
             </div>
         </div>
     </div>
-    <img src="../assets/images/Jesse.gif" class="gameImg" v-show="jesseAns" alt="">
-    <img src="../assets/images/lwy.gif" class="gameImg" v-show="lwyAns" alt="">
-    <img src="../assets/images/COCOWOW.gif" class="gameImg" v-show="wilsonAns" alt="">
-    <img src="../assets/images/Battle(2).gif" class="gameImg" v-show="battle" alt="">
 </template>
 <script setup>
 import { usePlayersStore } from '@/stores/player.js'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 const $store = usePlayersStore()
 const gameRound = ref(12)
 const gameLocationName = ref('')
@@ -144,7 +140,7 @@ const startGame = () => {
     setPlayer()
     $store.SET_GAME_NAME(gameName.value)
     $store.SET_GAME_NUM(gameRound.value)
-    $store.SET_GAME_Location(gameLocationName.value)
+    $store.SET_GAME_LOCATION(gameName.value)
 
 }
 const setPlayer = () => {
@@ -153,66 +149,8 @@ const setPlayer = () => {
         $store.addPlayer(playerData.value[i])
     }
 }
-//遊戲
-const jesseAns = ref(null)
-const wilsonAns = ref(null)
-const lwyAns = ref(null)
-const battle = ref(null)
-const handleInput = () => {
-    playerData.value = playerData.value.reduce((acc, crr) => acc.concat(crr.toLowerCase()), [])
-    for (let i = 0; i < playerData.value.length; i++) {
-        if (playerData.value[i].indexOf('jesse') !== -1 && jesseAns.value === null) {
-            jesseAns.value = confirm('偵測到Jesse在遊戲中，是否變更遊戲難度為困難模式')
-        }
-        if (playerData.value[i].indexOf('wilson') !== -1 && wilsonAns.value === null) {
-            wilsonAns.value = confirm('偵測到wilson在遊戲中，是否變更遊戲難度為快樂模式')
-        }
-        if (playerData.value[i].indexOf('羅') !== -1 && lwyAns.value === null) {
-            lwyAns.value = confirm('偵測到羅文妤在遊戲中，是否變更遊戲難度為厭世模式')
-        }
-        if (wilsonAns.value !== null && jesseAns.value !== null) {
-            battle.value = confirm('偵測到wilson和jesse在同一場遊戲中，是否開啟戰鬥模式')
-        }
-    }
-}
-watch(jesseAns, (newVal) => {
-    if (newVal) {
-        setTimeout(() => {
-            jesseAns.value = false;
-        }, 7000);
-    }
-});
-watch(wilsonAns, (newVal) => {
-    if (newVal) {
-        setTimeout(() => {
-            wilsonAns.value = false;
-        }, 7000);
-    }
-});
-watch(lwyAns, (newVal) => {
-    if (newVal) {
-        setTimeout(() => {
-            lwyAns.value = false;
-        }, 7000);
-    }
-});
-watch(battle, (newVal) => {
-    if (newVal) {
-        setTimeout(() => {
-            battle.value = false;
-        }, 7000);
-    }
-});
 </script>
 <style lang="scss" >
-.gameImg {
-    position: absolute;
-    width: 100%;
-    height: 100vh;
-    left: 0;
-    top: 0;
-}
-
 .card-button {
     background-color: red;
 }
@@ -467,6 +405,10 @@ watch(battle, (newVal) => {
 }
 
 @media screen and (max-width:600px) {
+    .col .playerTxt {
+        width: 100%;
+    }
+
     .home-container {
         .player {
             width: initial;

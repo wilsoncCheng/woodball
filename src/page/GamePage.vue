@@ -2,12 +2,12 @@
     <div class="game">
         <div class="game-container">
             <div class="game-header">
-                <div class="game-title"> 賽事名稱 第{{ $store.currentRound }}道/共{{ $store.gameRound }}道
+                <div class="game-title">{{ $store.gameLocation }} 第{{ $store.currentRound }}道/共{{ $store.gameRound }}道
                 </div>
                 <div class="game-right">
                     <div class="button-group">
-                        <button type="button"
-                            class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 border border-indigo-700 ">上一道</button>
+                        <button type="button" @click="GameOverPromptToggle"
+                            class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 border border-indigo-700 ">查看成績</button>
                         <router-link to="/setting">
                             <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 border border-red-700"
                                 @click="$store.RESET_ALL_GAME">離開</button>
@@ -26,46 +26,51 @@
             </div>
             <div class="game-body">
                 <div class="w-60">
-                    <div class="title">{{ $store.getPlayerById(currentPlayerIndex)?.name }} 第
-                        <span v-if="$store.getPlayerById(currentPlayerIndex)?.isFinish !== true">{{
-                            $store.getPlayerById(currentPlayerIndex)?.player_point.length
-                        }}</span><span v-else>
-                            {{
-                                $store.getPlayerById(currentPlayerIndex)?.player_point.length
-                            }}
+                    <div class="title text-orange"><span class="">{{ $store.getPlayerById(currentPlayerIndex)?.name
+                    }}</span> 第<span v-if="$store.getPlayerById(currentPlayerIndex)?.isFinish !== true">{{
+    $store.getPlayerById(currentPlayerIndex)?.player_point.length
+}}</span><span v-else>{{
+    $store.getPlayerById(currentPlayerIndex)?.player_point.length
+}}
                         </span>桿
                     </div>
                     <button type="button" @click="record_data_handler(currentPlayerIndex, 1)"
                         class="next-ball">/<br>計下一桿</button>
                     <div class="check-section">
                         <button type="button" @click="record_data_handler(currentPlayerIndex, 2)"
-                            class="ob green-button">OB</button>
+                            class="ob button_contain">OB</button>
                         <button type="button" @click="record_data_handler(currentPlayerIndex, 3)"
-                            class="ob green-button pc-show">左OB</button>
+                            class="ob button_contain pc-show">左OB</button>
                         <button type="button" @click="record_data_handler(currentPlayerIndex, 4)"
-                            class="ob green-button pc-show">右OB</button>
+                            class="ob button_contain pc-show">右OB</button>
                         <button type="button" @click="recovery_handler(currentPlayerIndex)"
-                            class="ob green-button mb-show">復原</button>
+                            class="ob button_contain mb-show">復原</button>
                     </div>
                 </div>
                 <div class="w-40">
-                    <div class="col space-between button-group">
+                    <div class="col space-between button-group mx-auto gap-3">
                         <button type="button" @click="recovery_handler(currentPlayerIndex)"
-                            class="recovery green-button">復原</button>
+                            class="recovery button_contain pc-show w-[50%]">復原</button>
                         <button type="button" @click="record_data_handler(currentPlayerIndex, 5)"
-                            class="foul green-button">犯規</button>
+                            class="foul button_contain pc-show w-[50%]">犯規</button>
                     </div>
-                    <button type="button" class="history green-button" @click="InformationPromptOpen">
-                        查看紀錄<br>
-                        *上一桿 左OB
+                    <button type="button" class=" history button_contain" @click="InformationPromptOpen">
+                        查看紀錄
                     </button>
-                    <button type="button" v-if="!allPlayerFinish" @click="record_data_handler(currentPlayerIndex, 9)"
-                        class="finish green-button" id="roundFinishBTN">
+                    <button
+                        :class="{ bg_finished: $store.players[currentPlayerIndex].isFinish, bg_finish: !$store.players[currentPlayerIndex].isFinish }"
+                        type="button" v-if="!allPlayerFinish" @click="record_data_handler(currentPlayerIndex, 9)"
+                        class="finish button_contain" id="roundFinishBTN">
                         完成
                     </button>
+                    <button type="button" v-else-if="allPlayerFinish && $store.currentRound !== $store.gameRound"
+                        @click="next_round_handler(currentPlayerIndex, 9)" class="finish button_contain bg_finished"
+                        id="roundFinishBTN">
+                        下一道
+                    </button>
                     <button type="button" v-else @click="next_round_handler(currentPlayerIndex, 9)"
-                        class="finish green-button" id="roundFinishBTN">
-                        下一道/結算
+                        class="finish button_contain bg_finished" id="roundFinishBTN">
+                        結算
                     </button>
                 </div>
                 <CurrentPointPrompt :open="CurrentPointPromptOpen" @closeInformationPrompt="InformationPromptClose"
@@ -77,24 +82,26 @@
                 <GameOverPrompt :open="GameOverPromptOpen" @closeGameOverPrompt="GameOverPromptClose"
                     @AllGameOverPrompt="GameOverToggle" :data="$store.totalGameData">
                 </GameOverPrompt>
-
             </div>
+            <AlertPrompt :errorMsg="propsMsg" />
         </div>
     </div>
 </template>
 <script setup>
-import { usePlayersStore } from '@/stores/player.js'
 import { ref, computed } from 'vue'
+import { usePlayersStore } from '@/stores/player.js'
 import playerButton from '@/components/playerButton.vue'
 import CurrentPointPrompt from '@/components/CurrentPointPrompt.vue';
 import GameRoundPrompt from '@/components/GameRoundPrompt.vue';
 import GameOverPrompt from '@/components/GameOverPrompt.vue';
+import AlertPrompt from '@/components/AlertPrompt.vue'
 const $store = usePlayersStore()
 const currentPlayerIndex = ref(0)
 const players = ref($store.players)
 const CurrentPointPromptOpen = ref(false)
 const GameRoundPromptOpen = ref(false)
 const GameOverPromptOpen = ref(false)
+const propsMsg = ref(null)
 const allPlayerFinish = computed(() => {
     return $store.players.reduce((acc, crr) => {
         if (crr.isFinish == false) {
@@ -129,16 +136,32 @@ const change_playing_player_handler = (player) => {
     currentPlayerIndex.value = player.id
 }
 const record_data_handler = (playerId, type) => {
+    if (propsMsg.value) return
     const player = $store.getPlayerById(playerId)
+
+    const lastPlayerPoint = player.player_point.slice(-1)[0];
+
+    if (lastPlayerPoint !== 1 && type !== 1) {
+        if (lastPlayerPoint === 9 && type === 9) {
+            propsMsg.value = '本玩家已經完成';
+        } else {
+            propsMsg.value = '需先記下一桿！';
+        }
+        setTimeout(() => {
+            propsMsg.value = '';
+        }, 3000);
+        return;
+    }
+
     if (player.isFinish == true) return
     $store.record_player_data(player, type)
     if (type == 9) {
         $store.player_finish_toggle(player)
-        $store.SET_GAME_ROUND_POINT(player)
     }
 }
 const next_round_handler = () => {
     allPlayerFinishHandler()
+    $store.SET_GAME_ROUND_POINT()
 }
 const allPlayerFinishHandler = () => {
     for (let i = 0; i < $store.players.length; i++) {
@@ -248,7 +271,6 @@ const recovery_handler = (playerId) => {
             width: 60%;
 
             .title {
-                color: #fff;
                 margin-bottom: 8px;
                 font-size: 66px;
                 line-height: 109px;
@@ -296,12 +318,10 @@ const recovery_handler = (playerId) => {
 
             .button-group {
                 width: 100%;
-                gap: 10px;
 
                 .recovery {
                     padding: 30px 0;
                     font-weight: bold;
-                    width: 50%;
                     min-height: auto;
                     font-size: 30px;
                     border-radius: 15px;
@@ -313,7 +333,6 @@ const recovery_handler = (playerId) => {
                     padding: 30px 0;
                     border-radius: 15px;
                     min-height: auto;
-                    width: 50%;
                 }
             }
 
@@ -333,16 +352,27 @@ const recovery_handler = (playerId) => {
                 font-weight: bold;
                 height: 100%;
                 border: none;
-                color: #1b5762;
-                background-color: #cbe2f9;
                 max-height: 56px;
                 transition: .3s all;
                 font-size: 30px;
             }
 
-            .finish:hover {
+
+            .bg_finish {
+                color: #1b5762;
+                background-color: #cbe2f9;
+
+            }
+
+            .bg_finish:hover {
                 background-color: #1b5762;
                 color: #a8dee7;
+
+            }
+
+            .bg_finished {
+                background: rgb(255 120 73);
+                color: #000;
             }
         }
     }

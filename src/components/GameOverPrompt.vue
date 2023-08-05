@@ -1,35 +1,42 @@
 <template>
-    <div class="popup-wrap" id="GameRoundPrompt" v-show="open">
-        <div class="popup-box transform-out">
-            <h1>遊戲全部結束</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>球道</th>
-                        <th v-for="round in $store.currentRound">{{ round }}</th>
-                        <th>總計</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="playerData in $store.players">
-                        <td>{{ playerData.name }}</td>
-                        <td v-for="playerDataList in playerData.every_game_total_poles">{{ playerDataList }}</td>
-                        <td> {{ getPlayerTotalScore(playerData) }}桿({{ getPlayerTotalScore(playerData)
-                            - 5 * $store.currentRound }})</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="button-group mt-4">
-                <button type="button" @click="closePopup"
-                    class="bg-stone-500 hover:bg-stone-700 text-white font-bold p-4 border border-stone-700 ">返回</button>
+    <div class="popup-wrap flex flex-col" id="GameRoundPrompt" v-show="open">
+        <div class="popup-box ">
+            <h1 class="mb-6 font-bold text-4xl">{{ $store.gameLocation }} 總成績</h1>
+            <div class=" overflow-x-auto">
+                <table v-if="$store.totalGameData.length !== 0">
+                    <thead>
+                        <tr>
+                            <th>球道</th>
+                            <th v-for="round in $store.gameRound">{{ round }}</th>
+                            <th v-show="$store.currentRound == $store.gameRound">總計</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="playerData in $store.players">
+                            <td>{{ playerData.name }}</td>
+                            <td v-for="playerDataList in playerData.every_game_total_poles">{{ playerDataList }}</td>
+                            <td v-show="playerData.every_game_total_poles.length == $store.gameRound"> {{
+                                getPlayerTotalScore(playerData)
+                            }}桿({{
+    getPlayerTotalScore(playerData)
+    - 5 * $store.currentRound }})</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h1 class="mb-6 font-bold text-4xl" v-else>尚無比賽資料</h1>
+            </div>
+            <div class="close-btn popup-close" @click="closePopup(2)">x</div>
+
+            <div class="button-group mt-8 mx-auto gap-5" v-show="$store.totalGameData.length >= $store.gameRound">
+                <button type="button" @click="closePopup(1)"
+                    class="bg-stone-500 hover:bg-stone-700 text-white font-bold p-4 border border-stone-700 min-w-[160px]">返回</button>
 
                 <router-link to="/setting">
                     <button type="button" @click="GameOver" id="gameOverBTN"
-                        class="bg-green-500 hover:bg-green-700 text-white font-bold p-4 border border-green-700">完成</button>
+                        class="bg-green-500 hover:bg-green-700 text-white font-bold p-4 border border-green-700 min-w-[160px]">完成</button>
                 </router-link>
 
             </div>
-            <div class="close-btn popup-close" @click="closePopup">x</div>
         </div>
     </div>
 </template>
@@ -40,12 +47,15 @@ import { defineProps, defineEmits } from 'vue';
 const $store = usePlayersStore()
 const props = defineProps(['open', 'data']);
 const emit = defineEmits();
-const closePopup = () => {
+const closePopup = (param) => {
     emit('closeGameOverPrompt');
-    $store.player_all_unfinish()
+    if (param == 1) {
+        $store.player_all_unfinish()
+        $store.POP_TOTALGAMEROUND()
+        $store.RECOVERY_GAME_ROUND_POINT()
+    }
 };
 const GameOver = () => {
-    alert('Wilson做這個系統真的好辛苦')
     emit('AllGameOverPrompt');
     $store.RESET_ALL_GAME
 }
@@ -59,7 +69,7 @@ const getPlayerTotalScore = (playerData) => {
 
   
 
-<style lang="scss" scoped>
+<style lang="scss">
 .noRecord {
     font-size: 44px;
     font-weight: bold;
@@ -75,12 +85,14 @@ th,
 td {
     padding: 8px;
     text-align: left;
+    min-width: 60px;
     border-bottom: 1px solid #ddd;
 }
 
 tr>th,
 td:first-child {
     max-width: 150px;
+    min-width: 50px;
 }
 
 th {
@@ -98,10 +110,14 @@ tr:hover {
 
 
 .popup-wrap {
+
     width: 100%;
     font-size: 24px;
     height: 100%;
     position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     top: 0px;
     left: 0px;
     content: '';
@@ -109,58 +125,44 @@ tr:hover {
 }
 
 .popup-box {
-    width: 100%;
-    min-width: 360px;
-    padding: 50px 75px;
-    transform: translate(-50%, -50%) scale(0.5);
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    max-height: 90%;
+    width: 80%;
+    padding: 10px 75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 200px;
+    position: relative;
+    max-width: 720px;
     box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.5);
     border-radius: 3px;
     background: #fff;
     text-align: center;
 
-    h1 {
-        font-size: 48px;
-        font-weight: bold;
-    }
-
-    h2 {
-        font-size: 60px;
-        font-weight: bold;
-    }
-
     th,
     td {
         text-align: center;
-
+        white-space: nowrap;
     }
 
     thead {
-        font-size: 40px;
+        font-size: 20px;
         font-weight: bold;
 
 
     }
 
     tbody {
-        font-size: 40px;
+        font-size: 20px;
         font-weight: bold;
     }
 }
 
 .button-group {
-    margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     width: 100%;
-    max-width: 400px;
-
-    >button {
-        min-width: 160px;
-        min-height: auto;
-    }
 }
 
 .close-btn {
@@ -178,19 +180,5 @@ tr:hover {
     color: #fff;
     line-height: 40px;
     font-size: 32px;
-}
-
-.transform-in,
-.transform-out {
-    display: block;
-    transition: all ease 0.5s;
-}
-
-.transform-in {
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.transform-out {
-    transform: translate(-50%, -50%) scale(0.5);
 }
 </style>

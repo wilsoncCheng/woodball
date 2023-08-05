@@ -29,7 +29,7 @@ export const usePlayersStore = defineStore('players', () => {
   const SET_GAME_NUM = (params) => {
     gameRound.value = params
   }
-  const SET_GAME_Location = (params) => {
+  const SET_GAME_LOCATION = (params) => {
     gameLocation.value = params
   }
   //COMPUTED
@@ -46,6 +46,9 @@ export const usePlayersStore = defineStore('players', () => {
     }
     currentRound.value++;
   };
+  const POP_TOTALGAMEROUND = () => {
+    totalGameData.value.pop()
+  }
   const RESET_ALL_GAME = () => {
     totalGameData.value = []
     players.value = []
@@ -79,9 +82,6 @@ export const usePlayersStore = defineStore('players', () => {
       player.player_point.pop()
     }
     player.player_point.push(type)
-    if (type !== 9 && type !== 1) {
-      player.player_point.push(1)
-    }
   };
   const recovery_player_data = (player) => {
     if (player.player_point.length == 1 && player.player_point.indexOf(9) == -1) return
@@ -89,10 +89,6 @@ export const usePlayersStore = defineStore('players', () => {
       player_finish_toggle(player)
       player.player_point.pop();
       player.player_point.push(1);
-      return
-    }
-    if (player.player_point[player.player_point.length - 2] !== 1) {
-      player.player_point = player.player_point.slice(0, -2);
       return
     }
     player.player_point.pop()
@@ -104,5 +100,5 @@ export const usePlayersStore = defineStore('players', () => {
     }
   };
 
-  return { RESET_ALL_GAME, RECOVERY_GAME_ROUND_POINT, SET_GAME_ROUND_POINT, RESET_PLAYER, reset_game_round, record_game_round, totalGameData, gameName, player_all_unfinish, gameRound, gameLocation, currentRound, SET_GAME_NAME, SET_GAME_NUM, SET_GAME_Location, players, playerId, addPlayer, getPlayerById, recovery_player_data, record_player_data, player_finish_toggle };
+  return { POP_TOTALGAMEROUND, RESET_ALL_GAME, RECOVERY_GAME_ROUND_POINT, SET_GAME_ROUND_POINT, RESET_PLAYER, reset_game_round, record_game_round, totalGameData, gameName, player_all_unfinish, gameRound, gameLocation, currentRound, SET_GAME_NAME, SET_GAME_NUM, SET_GAME_LOCATION, players, playerId, addPlayer, getPlayerById, recovery_player_data, record_player_data, player_finish_toggle };
 });

@@ -22,7 +22,6 @@
           </div>
         </div>
       </div>
-      <!-- <button type="submit" name="loginBTN" class="card-bottom mx-auto">登入</button> -->
       <router-link to="/setting" class="w-full">
         <button type="submit" name="loginBTN" class="card-bottom mx-auto">登入</button>
       </router-link>

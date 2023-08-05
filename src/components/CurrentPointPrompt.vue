@@ -1,8 +1,8 @@
 <template>
     <div class="popup-wrap" id="currentPointPrompt" v-show="open" @click="closePopup">
         <div class="popup-box transform-out">
-            <h2>賽事名稱</h2>
-            <h2>第{{ $store.currentRound }}道</h2>
+            <h2 class="font-bold text-4xl">{{ $store.gameLocation }}</h2>
+            <h2 class="font-bold text-4xl">第{{ $store.currentRound }}道</h2>
             <h1> {{ data.name }}</h1>
             <div class="table-container">
                 <table>
@@ -42,7 +42,7 @@ const { open, data } = defineProps(['open', 'data']);
 
   
 
-<style lang="scss">
+<style lang="scss" scoped>
 .noRecord {
     font-size: 44px;
     font-weight: bold;
@@ -59,7 +59,8 @@ table {
 }
 
 .table-container {
-    max-height: 700px;
+    width: 100%;
+    max-height: 400px;
     overflow-y: auto;
     position: relative;
 }
@@ -85,58 +86,6 @@ tr:hover {
 }
 
 
-.popup-wrap {
-    width: 100%;
-    font-size: 24px;
-    height: 100%;
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    content: '';
-    background: rgba(0, 0, 0, 0.85);
-}
-
-.popup-box {
-    width: 100%;
-    min-width: 360px;
-    padding: 50px 75px;
-    transform: translate(-50%, -50%) scale(0.5);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.5);
-    border-radius: 3px;
-    background: #fff;
-    text-align: center;
-
-    h1 {
-        font-size: 48px;
-        font-weight: bold;
-    }
-
-    h2 {
-        font-size: 60px;
-        font-weight: bold;
-    }
-
-    th,
-    td {
-        text-align: center;
-
-    }
-
-    thead {
-        font-size: 40px;
-        font-weight: bold;
-
-
-    }
-
-    tbody {
-        font-size: 40px;
-        font-weight: bold;
-    }
-}
 
 .foul {
     color: red;
@@ -157,19 +106,5 @@ tr:hover {
     color: #fff;
     line-height: 40px;
     font-size: 32px;
-}
-
-.transform-in,
-.transform-out {
-    display: block;
-    transition: all ease 0.5s;
-}
-
-.transform-in {
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.transform-out {
-    transform: translate(-50%, -50%) scale(0.5);
 }
 </style>
