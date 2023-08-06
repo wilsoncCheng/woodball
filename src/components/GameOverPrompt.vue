@@ -126,8 +126,8 @@ tr:hover {
 
 .popup-box {
     max-height: 90%;
+    padding: 15px 20px;
     width: 80%;
-    padding: 10px 75px;
     display: flex;
     align-items: center;
     justify-content: center;

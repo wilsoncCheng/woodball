@@ -1,8 +1,8 @@
 <template>
-    <div class="popup-wrap" id="GameRoundPrompt" v-show="open">
+    <div class="popup-wrap " id="GameRoundPrompt" v-show="open">
         <div class="popup-box transform-out">
-            <h2 class=" font-bold text-3xl">{{ $store.gameLocation }} 第{{ $store.currentRound }}道</h2>
-            <div class="overflow-y-auto max-h-[200px]">
+            <h2 class=" font-bold text-3xl mb-6">{{ $store.gameLocation }} 第{{ $store.currentRound }}道</h2>
+            <div class="overflow-y-auto max-h-[200px] mb-6">
                 <table>
                     <thead>
                         <tr>

@@ -1,6 +1,6 @@
 <template>
-    <div class="home">
-        <div class="home-container">
+    <div class="setting">
+        <div class="setting-container">
             <div class="contest">
                 <div class="col space-between">
                     <div class="title">{{ $store.gameLocation }}</div>
@@ -164,7 +164,7 @@ const setPlayer = () => {
     width: 80%;
 }
 
-.home {
+.setting {
     margin: 20px 0;
     width: 90%;
     min-width: 360px;

@@ -275,6 +275,7 @@ const recovery_handler = (playerId) => {
                 font-size: 66px;
                 line-height: 109px;
                 font-weight: bold;
+                text-align: center;
             }
 
             .next-ball {
@@ -411,6 +412,7 @@ const recovery_handler = (playerId) => {
 
                 .title {
                     font-size: 40px;
+
                 }
 
                 .check-section .ob {

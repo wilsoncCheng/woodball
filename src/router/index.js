@@ -3,11 +3,16 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import login from '@/page/LoginPage.vue';
 import setting from '@/page/SettingPage.vue';
 import game from '@/page/GamePage.vue';
+import home from '@/page/HomePage.vue';
 
 const routes = [
   {
     path: '/',
-    redirect: '/login', // 重定向到 /login
+    component: home,
+  },
+  {
+    path: '/login',
+    component: login,
   },
   {
     path: '/login',
