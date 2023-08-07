@@ -1,6 +1,6 @@
 <template>
     <div class="home w-full flex flex-col pt-4">
-        <nav class="w-full flex justify-between p-4 bg-gray-800 text-white">
+        <nav class="w-full flex justify-between p-4 bg-gray-800 text-white items-center">
             <div class="text-xl font-bold">木球資訊系統</div>
             <div class="font-bold relative">
                 <img src="../assets/images/user.png" class="user cursor-pointer w-12 bg-white rounded-full p-2"
@@ -24,8 +24,9 @@
             </div>
         </div>
         <div class="flex flex-wrap justify-center">
-            <div v-for="(card, index) in cardsData" :key="index" class="w-full sm:w-1/2 md:w-1/3 lg:w-1/3 xl:w-1/3 p-4">
-                <div class=" rounded overflow-hidden shadow-lg">
+            <div v-for="(card, index) in cardsData" :key="index"
+                class=" cursor-pointer w-full sm:w-1/2 md:w-1/3 lg:w-1/3 xl:w-1/3 p-4">
+                <div class="rounded overflow-hidden shadow-lg">
                     <img class="w-full h-64 object-cover" :src="card.image" alt="Card Image" />
                     <div class="px-6 py-4 bg-white">
                         <div class="font-bold text-xl mb-2">{{ card.name }}</div>
