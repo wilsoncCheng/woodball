@@ -6,6 +6,7 @@ export const usePlayersStore = defineStore('players', () => {
   const gameName = ref(null)
   const gameRound = ref(null)
   const gameLocation = ref(null)
+  const gameID = ref(null)
   const currentRound = ref(1)
   let playerId = 0;
   const addPlayer = (name) => {
@@ -20,6 +21,9 @@ export const usePlayersStore = defineStore('players', () => {
     playerId++;
   };
   //SET DATA
+  const SET_GAME_ID = (params) => {
+    gameID.value = params
+  }
   const RESET_PLAYER = () => {
     players.value = []
   }
@@ -100,5 +104,5 @@ export const usePlayersStore = defineStore('players', () => {
     }
   };
 
-  return { POP_TOTALGAMEROUND, RESET_ALL_GAME, RECOVERY_GAME_ROUND_POINT, SET_GAME_ROUND_POINT, RESET_PLAYER, reset_game_round, record_game_round, totalGameData, gameName, player_all_unfinish, gameRound, gameLocation, currentRound, SET_GAME_NAME, SET_GAME_NUM, SET_GAME_LOCATION, players, playerId, addPlayer, getPlayerById, recovery_player_data, record_player_data, player_finish_toggle };
+  return { SET_GAME_ID, gameID, POP_TOTALGAMEROUND, RESET_ALL_GAME, RECOVERY_GAME_ROUND_POINT, SET_GAME_ROUND_POINT, RESET_PLAYER, reset_game_round, record_game_round, totalGameData, gameName, player_all_unfinish, gameRound, gameLocation, currentRound, SET_GAME_NAME, SET_GAME_NUM, SET_GAME_LOCATION, players, playerId, addPlayer, getPlayerById, recovery_player_data, record_player_data, player_finish_toggle };
 });

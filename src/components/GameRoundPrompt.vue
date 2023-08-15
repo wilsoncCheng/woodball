@@ -42,7 +42,7 @@
   
 <script setup>
 import { usePlayersStore } from '@/stores/player.js'
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits, ref } from 'vue';
 const $store = usePlayersStore()
 const props = defineProps(['open', 'data']);
 const emit = defineEmits();
@@ -51,13 +51,6 @@ const closePopup = () => {
     $store.player_all_unfinish()
     $store.RECOVERY_GAME_ROUND_POINT()
 };
-const nextGame = () => {
-    emit('closeGameRoundPrompt');
-    $store.record_game_round()
-    if ($store.totalGameData.length >= $store.gameRound) {
-        emit('gameOver');
-    }
-}
 
 const getPlayerTotalScore = (playerData) => {
     return playerData.every_game_total_poles.reduce(
@@ -65,6 +58,37 @@ const getPlayerTotalScore = (playerData) => {
         0
     );
 };
+const gameScore = ref([])
+const calculateGameScore = () => {
+    for (let i = 0; i < $store.players.length; i++) {
+        gameScore.value.push($store.players[i].player_point)
+    }
+    return gameScore
+}
+const nextGame = async () => {
+    calculateGameScore()
+    try {
+        // const response = await fetch(`/app/api/Practice/SaveScore?AID=${$store.gameID}&FNum=${$store.currentRound}`, {
+        const response = await fetch(`https://api.antqtech.com/Woodball/Practice/SaveScore?AID=${$store.gameID}&FNum=${$store.currentRound}`, {
+            method: 'POST',
+            body: JSON.stringify(gameScore.value)
+        });
+
+        const data = await response.json();
+        gameScore.value = []
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        return
+    }
+
+    emit('closeGameRoundPrompt');
+    $store.record_game_round()
+    if ($store.totalGameData.length >= $store.gameRound) {
+        emit('gameOver');
+    }
+
+}
+
 </script>
 
   

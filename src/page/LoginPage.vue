@@ -1,34 +1,60 @@
 <template>
   <div class="login">
     <div class="card">
-      <div class="card-top" name="system">木球競賽資訊系統</div>
-      <div class="card-body">
-        <div class="email">
-          <input class="textbox" type="text" placeholder="信箱" name="emailTBX">
+      <div class="card-top text-center" name="system">木球競賽資訊系統</div>
+      <div class="card-body flex flex-col items-center">
+        <div class="email w-full flex justify-center">
+          <input class="textbox" type="text" v-model="email" placeholder="信箱" name="emailTBX">
         </div>
-        <div class="password">
-          <input class="textbox" type="password" placeholder="密碼" name="passwordTBX">
+        <div class="password w-full flex justify-center">
+          <input class="textbox" type="password" v-model="password" placeholder="密碼" name="passwordTBX">
         </div>
-        <div class="col">
+        <div class="col w-4/5">
           <div class="remember">
             <label for="rememberCBX" class="remember-label">
               <input type="checkbox" name="rememberCBX">
               <p>記住信箱</p>
             </label>
           </div>
-
           <div class="forget" name="forgetPasswordBTN">
             <a href="#">忘記密碼</a>
           </div>
+          <!-- 註冊按鈕 -->
+          <router-link to="/register">
+            <div class="forget" name="forgetPasswordBTN">
+              <a href="#">註冊</a>
+            </div>
+          </router-link>
         </div>
       </div>
-      <router-link to="/setting" class="w-full">
-        <button type="submit" name="loginBTN" class="card-bottom mx-auto">登入</button>
-      </router-link>
+      <button type="submit" name="loginBTN" class="card-bottom mx-auto w-full" @click="LoginHandler">登入</button>
     </div>
   </div>
 </template>
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user.js'
+const $store = useUserStore()
+const router = useRouter()
+const email = ref(null)
+const password = ref(null)
+const LoginHandler = async () => {
+  try {
+    // const response = await fetch(`/app/api/Account/Login?PID=${email.value}&PPwd=${password.value}`, {
+    const response = await fetch(`https://api.antqtech.com/Woodball/Account/Login?PID=${email.value}&PPwd=${password.value}`, {
+      method: 'POST'
+    });
+    const data = await response.json();
+    alert(data[0].msg)
+    if (data[0].msg == '驗證成功～') {
+      router.push('/')
+      $store.SET_USER_EMAIL(email.value)
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
 </script>
 <style lang="scss" scoped>
 .login {
@@ -60,9 +86,9 @@
         border: none;
         font-weight: bold;
         font-size: 22px;
-        margin-bottom: 35px;
+        margin: 0 auto 35px auto;
         padding: 8px;
-        width: 70%;
+        width: 80%;
         border-bottom: 1px solid #fff;
 
       }

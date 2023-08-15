@@ -2,7 +2,8 @@
     <div class="game">
         <div class="game-container">
             <div class="game-header">
-                <div class="game-title">{{ $store.gameLocation }} 第{{ $store.currentRound }}道/共{{ $store.gameRound }}道
+                <div class="game-title">{{ $store.gameLocation }} 第{{ $store.currentRound }}道/共{{
+                    $store.gameRound }}道
                 </div>
                 <div class="game-right">
                     <div class="button-group">
